@@ -2,7 +2,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 interface Person {
-  id: number
+  id?: number
   name: string
   number: string
 }
@@ -27,14 +27,15 @@ export const personApi = createApi({
       query: () => `rest/v1/person?select=*'`,
       providesTags: [{ type: 'Person', id: 'LIST' }],
     }),
-    addPerson: builder.mutation<
-      { name: string; number: string },
-      { name: string; number: string }
-    >({
+    addPerson: builder.mutation<void, Person>({
       query(Person) {
         return {
-          url: `/info`,
+          url: `/rest/v1/person`,
           method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Prefer': 'return=representation',
+          },
           body: Person,
         }
       },
